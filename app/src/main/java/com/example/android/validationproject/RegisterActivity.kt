@@ -3,12 +3,12 @@ package com.example.android.validationproject
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.view.inputmethod.EditorInfo
+import android.telephony.PhoneNumberFormattingTextWatcher
+import android.text.*
 import androidx.appcompat.app.AppCompatActivity
+import com.example.android.validationproject.Validation.EditTextValidator
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.datepicker.MaterialDatePicker
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.text.SimpleDateFormat
 import java.util.*
@@ -16,6 +16,7 @@ import java.util.*
 
 class RegisterActivity : AppCompatActivity() {
 
+    private var prefix = "+7"
     private var viewModel: RegisterViewModel ?= null
     private var firstNameEditText: TextInputLayout ?= null
     private var lastNameEditText: TextInputLayout ?= null
@@ -46,150 +47,267 @@ class RegisterActivity : AppCompatActivity() {
         button = findViewById(R.id.registerButton)
         setupRegisterButton()
         setupBirthdayInputText()
+        setupPhoneNumberFormat()
+        setupFirstNameValidator()
+        setupLastNameValidator()
+        setupMiddleNameValidator()
+        setupUsernameValidator()
+        setupIINValidator()
+        setupPhoneNumberValidator()
+        setupBirthdayValidator()
+        setupPasswordValidator()
+        setupPasswordConfirmationValidator()
 
 
     }
 
-    private fun isFirstNameValidated():Boolean{
-        val firstName: String = firstNameEditText?.editText?.text.toString().trim()
-        return if (firstName.isNullOrBlank()){
-            firstNameEditText?.error = "Field First name  cannot be empty!"
-            true
-        }else{
-            firstNameEditText?.error = null
-            firstNameEditText?.isErrorEnabled = false
-            false
-        }
+    private fun setupFirstNameValidator(){
+        firstNameEditText?.editText?.addTextChangedListener(object : EditTextValidator(
+            firstNameEditText?.editText as TextInputEditText?
+        ) {
+            override fun validate(editText: TextInputEditText, text: String) {
+                val firstName: String = firstNameEditText?.editText?.text.toString().trim()
+                if (firstName.isNullOrBlank()){
+                    firstNameEditText?.error = getString(R.string.first_name_error)
+                }else{
+                    firstNameEditText?.error = null
+                    firstNameEditText?.isErrorEnabled = false
+                }
+            }
+        })
     }
 
-    private fun isLastNameValidated():Boolean{
-        val lastName: String = lastNameEditText?.editText?.text.toString().trim()
-        return if (lastName.isNullOrBlank()){
-            lastNameEditText?.error = "Field Last name  cannot be empty!"
-            true
-        }else {
-            lastNameEditText?.error = null
-            lastNameEditText?.isErrorEnabled = false
-            false
-        }
+    private fun setupLastNameValidator(){
+        lastNameEditText?.editText?.addTextChangedListener(object : EditTextValidator(
+            lastNameEditText?.editText as TextInputEditText?
+        ){
+            override fun validate(editText: TextInputEditText, text: String) {
+                val lastName: String = lastNameEditText?.editText?.text.toString().trim()
+                if (lastName.isNullOrBlank()){
+                    lastNameEditText?.error = getString(R.string.last_name_error)
+                }else {
+                    lastNameEditText?.error = null
+                    lastNameEditText?.isErrorEnabled = false
+                }
+            }
+        })
     }
 
-    private fun isMiddleNameValidated():Boolean{
-        val middleName: String = middleNameEditText?.editText?.text.toString().trim()
-        return if (middleName.isNullOrBlank()){
-            middleNameEditText?.error = "Field Middle name  cannot be empty!"
-            true
-        }else {
-            middleNameEditText?.error = null
-            middleNameEditText?.isErrorEnabled = false
-            false
-        }
+    private fun setupMiddleNameValidator(){
+        middleNameEditText?.editText?.addTextChangedListener(object : EditTextValidator(
+            middleNameEditText?.editText as TextInputEditText
+        ){
+            override fun validate(editText: TextInputEditText, text: String) {
+                val middleName: String = middleNameEditText?.editText?.text.toString().trim()
+                if (middleName.isNullOrBlank()){
+                    middleNameEditText?.error = getString(R.string.middle_name_error)
+                }else {
+                    middleNameEditText?.error = null
+                    middleNameEditText?.isErrorEnabled = false
+                }
+            }
+        })
     }
 
-    private fun isUsernameValidated():Boolean{
-        val regex: String = "^[a-z0-9_-]{3,15}$"
-        val username: String = usernameEditText?.editText?.text.toString().trim()
-        return if (username.isNullOrBlank()){
-            usernameEditText?.error = "Field username cannot be empty!!"
-            true
-        }else if (!username.matches(regex.toRegex())){
-            usernameEditText?.error = "Invalid format"
-            true
-        }else {
-            usernameEditText?.error = null
-            usernameEditText?.isErrorEnabled = false
-            false
-        }
+    private fun setupUsernameValidator(){
+        usernameEditText?.editText?.addTextChangedListener(object : EditTextValidator(
+            usernameEditText?.editText as TextInputEditText?
+        ) {
+            override fun validate(editText: TextInputEditText, text: String) {
+                val regex: String = "^[a-z0-9_-]{3,15}$"
+                val username: String = usernameEditText?.editText?.text.toString().trim()
+                if (username.isNullOrBlank()){
+                    usernameEditText?.error = getString(R.string.username_error)
+                }else if (!username.matches(regex.toRegex())){
+                    usernameEditText?.error = getString(R.string.username_format_error)
+                }else {
+                    usernameEditText?.error = null
+                    usernameEditText?.isErrorEnabled = false
+                }
+            }
+
+        })
     }
 
-    private fun isIINValidated():Boolean{
-        val iin: String = iinEditText?.editText?.text.toString().trim()
-        return if (iin.isNullOrBlank()){
-            iinEditText?.error = "Field IIN cannot be empty!!"
-            println("что то не так")
-            true
-        }else if (iin.length > 12 || iin.length < 12){
-            iinEditText?.error = "Invalid format"
-            true
-        }else {
-            lastNameEditText?.error = null
-            lastNameEditText?.isErrorEnabled = false
-            false
-        }
+    private fun setupIINValidator(){
+        iinEditText?.editText?.addTextChangedListener(object : EditTextValidator(
+            iinEditText?.editText as TextInputEditText
+        ){
+            override fun validate(editText: TextInputEditText, text: String) {
+                val iin: String = iinEditText?.editText?.text.toString().trim()
+                when {
+                    iin.isNullOrBlank() -> {
+                        iinEditText?.error = getString(R.string.iin_error)
+                    }
+                    iin.length == 12 -> {
+                        iinEditText?.error = null
+                        iinEditText?.isErrorEnabled = false
+                    }
+                    else -> {
+                        iinEditText?.error = getString(R.string.iin_format_error)
+                    }
+                }
+            }
+        })
     }
 
-
-    private fun isPhoneNumberValidated():Boolean{
-        val regex: String = "^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}\$"
-        val phoneNumber: String = phoneNumberEditText?.editText?.text.toString().trim()
-        return if (phoneNumber.isNullOrBlank()){
-            phoneNumberEditText?.error = "Field phone number cannot be empty!!"
-            true
-        }else if (!phoneNumber.matches(regex.toRegex())){
-            phoneNumberEditText?.error = "Invalid format, password should contain: at least 8 symbols, 1 uppercase letter, 1 special symbol (!/\$%^)"
-            true
-        }else {
-            phoneNumberEditText?.error = null
-            phoneNumberEditText?.isErrorEnabled = false
-            false
-        }
+    private fun setupPhoneNumberValidator(){
+        phoneNumberEditText?.editText?.addTextChangedListener(object : EditTextValidator(
+            birthdayEditText?.editText as TextInputEditText
+        ){
+            override fun validate(editText: TextInputEditText, text: String) {
+                val regex: String = "^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{10,13}\$"
+                val phoneNumber: String = phoneNumberEditText?.editText?.text.toString().trim()
+                if (phoneNumber.isNullOrBlank()){
+                    phoneNumberEditText?.error = getString(R.string.phone_number_error)
+                }else if (!phoneNumber.matches(regex.toRegex())){
+                    phoneNumberEditText?.error = getString(R.string.invalid_format)
+                }else {
+                    phoneNumberEditText?.error = null
+                    phoneNumberEditText?.isErrorEnabled = false
+                }
+            }
+        })
     }
 
-    private fun isBirthDayValidated():Boolean{
-        val regex: String = "^\\d{2}.\\d{2}.\\d{4}\$"
-        val birthday: String = birthdayEditText?.editText?.text.toString().trim()
-        return if (birthday.isNullOrBlank()){
-            birthdayEditText?.error = "Field birthday cannot be empty!!"
-            true
-        }else if (!birthday.matches(regex.toRegex())){
-            birthdayEditText?.error = "Invalid format!"
-            true
-        }else{
-            birthdayEditText?.error = null
-            birthdayEditText?.isErrorEnabled = false
-            false
-        }
+    private fun setupBirthdayValidator(){
+        birthdayEditText?.editText?.addTextChangedListener(object : EditTextValidator(
+            birthdayEditText?.editText as TextInputEditText
+        ){
+            override fun validate(editText: TextInputEditText, text: String) {
+                val regex: String = "^\\d{2}-\\d{2}-\\d{4}\$"
+                val birthday: String = birthdayEditText?.editText?.text.toString().trim()
+                if (birthday.isNullOrBlank()){
+                    birthdayEditText?.error = getString(R.string.birthday_error)
+                }else if (!birthday.matches(regex.toRegex())){
+                    birthdayEditText?.error = getString(R.string.invalid_format)
+                }else{
+                    birthdayEditText?.error = null
+                    birthdayEditText?.isErrorEnabled = false
+                }
+            }
+        })
     }
 
-    private fun isPasswordValidated1():Boolean{
-        val regex: String = "^(?=.{10,}\$)(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).*\$"
-        val password: String = passwordEditText?.editText?.text.toString().trim()
-        return if (password.isNullOrBlank()){
-            passwordEditText?.error = "Field password cannot be empty!!"
-            true
-        }else if (!password.matches(regex.toRegex())){
-            passwordEditText?.error = "Invalid format!"
-            true
-        }else{
-            passwordEditText?.error = null
-            passwordEditText?.isErrorEnabled = false
-            false
-        }
+    private fun setupPasswordValidator(){
+        passwordEditText?.editText?.addTextChangedListener(object : EditTextValidator(
+            passwordEditText?.editText as TextInputEditText
+        ){
+            override fun validate(editText: TextInputEditText, text: String) {
+                val regex: String = "^(?=.{8,}\$)(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).*\$"
+                val password: String = passwordEditText?.editText?.text.toString().trim()
+                if (password.isNullOrBlank()){
+                    passwordEditText?.error = getString(R.string.password_error)
+                }else if (!password.matches(regex.toRegex())){
+                    passwordEditText?.error = getString(R.string.password_format_error)
+                }else{
+                    passwordEditText?.error = null
+                    passwordEditText?.isErrorEnabled = false
+                }
+            }
+        })
     }
 
-    private fun isPasswordValidated2():Boolean{
-        val password: String = passwordEditText?.editText?.text.toString().trim()
-        val confirmPassword: String = passwordConfirmEditText?.editText?.text.toString().trim()
-        return if (confirmPassword.isNullOrBlank()){
-            passwordConfirmEditText?.error = "Field password confirm cannot be empty!!"
-            true
-        }else if (password != confirmPassword){
-            passwordConfirmEditText?.error = "Passwords should be same"
-            true
-        }else{
-            passwordConfirmEditText?.error = null
-            passwordConfirmEditText?.isErrorEnabled = false
-            false
-        }
+    private fun setupPasswordConfirmationValidator(){
+        passwordConfirmEditText?.editText?.addTextChangedListener(object : EditTextValidator(
+            passwordConfirmEditText?.editText as TextInputEditText
+        ){
+            override fun validate(editText: TextInputEditText, text: String) {
+                val password: String = passwordEditText?.editText?.text.toString().trim()
+                val confirmPassword: String = passwordConfirmEditText?.editText?.text.toString().trim()
+                when {
+                    confirmPassword.isNullOrBlank() -> {
+                        passwordConfirmEditText?.error = getString(R.string.password_confi_error)
+                    }
+                    password != confirmPassword -> {
+                        passwordConfirmEditText?.error = getString(R.string.passwords_should_be_same)
+                    }
+                    else -> {
+                        passwordConfirmEditText?.error = null
+                        passwordConfirmEditText?.isErrorEnabled = false
+                    }
+                }
+            }
+        })
     }
+
     private fun setupRegisterButton(){
         button?.setOnClickListener {
-            if (!isFirstNameValidated() && !isLastNameValidated() && !isMiddleNameValidated() && !isUsernameValidated() && !isIINValidated() && !isBirthDayValidated() && !isPhoneNumberValidated() && !isPasswordValidated1() && !isPasswordValidated2()) {
+            if (firstNameEditText?.editText?.error == null &&
+                    lastNameEditText?.editText?.error == null &&
+                    usernameEditText?.editText?.error == null &&
+                    iinEditText?.editText?.error == null &&
+                    phoneNumberEditText?.editText?.error == null &&
+                    passwordEditText?.editText?.error == null &&
+                    passwordConfirmEditText?.editText?.error == null) {
                 val intent = Intent(this@RegisterActivity, AnotherActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
+                finish()
             }
         }
+    }
+
+    private fun setupPhoneNumberFormat(){
+        phoneNumberEditText?.editText?.setText(prefix)
+
+        phoneNumberEditText?.editText?.addTextChangedListener(object : PhoneNumberFormattingTextWatcher() {
+            //we need to know if the user is erasing or inputing some new character
+            private var backspacingFlag = false
+
+            //we need to block the :afterTextChanges method to be called again after we just replaced the EditText text
+            private var editedFlag = false
+
+            //we need to mark the cursor position and restore it after the edition
+            private var cursorComplement = 0
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                //we store the cursor local relative to the end of the string in the EditText before the edition
+                cursorComplement = s.length - phoneNumberEditText?.editText!!.selectionStart
+                //we check if the user ir inputing or erasing a character
+                backspacingFlag = count > after
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                // TODO do something
+            }
+
+            override fun afterTextChanged(s: Editable) {
+                val string = s.toString()
+                //what matters are the phone digits beneath the mask, so we always work with a raw string with only digits
+                val phone = string.replace("[^\\d]".toRegex(), "")
+
+                //if the text was just edited, :afterTextChanged is called another time... so we need to verify the flag of edition
+                //if the flag is false, this is a original user-typed entry. so we go on and do some magic
+                if (!editedFlag) {
+
+                    //we start verifying the worst case, many characters mask need to be added
+                    //example: 999999999 <- 6+ digits already typed
+                    // masked: (999) 999-999
+                    if (phone.length >= 9 && !backspacingFlag) {
+                        //we will edit. next call on this textWatcher will be ignored
+                        editedFlag = true
+                        //here is the core. we substring the raw digits and add the mask as convenient
+                        val ans = "+7(" + phone.substring(1, 4) + ") " + phone.substring(4,7
+                        ) + "-" + phone.substring(7, 9) + "-" + phone.substring(9)
+                        phoneNumberEditText?.editText?.setText(ans)
+                        //we deliver the cursor to its original position relative to the end of the string
+                        phoneNumberEditText?.editText?.setSelection(phoneNumberEditText?.editText?.text!!.length - cursorComplement)
+
+                        //we end at the most simple case, when just one character mask is needed
+                        //example: 99999 <- 3+ digits already typed
+                        // masked: (999) 99
+                    } else if (phone.length >= 4 && !backspacingFlag) {
+                        editedFlag = true
+                        val ans = "+7(" + phone.substring(1, 4) + ") " + phone.substring(4)
+                        phoneNumberEditText?.editText?.setText(ans)
+                        phoneNumberEditText?.editText?.setSelection(phoneNumberEditText?.editText?.text!!.length - cursorComplement)
+                    }
+                    // We just edited the field, ignoring this cicle of the watcher and getting ready for the next
+                } else {
+                    editedFlag = false
+                }
+            }
+        })
     }
     private fun setupBirthdayInputText(){
 
@@ -199,21 +317,19 @@ class RegisterActivity : AppCompatActivity() {
             myCalendar.set(Calendar.YEAR, year)
             myCalendar.set(Calendar.MONTH, month)
             myCalendar.set(Calendar.DAY_OF_MONTH, dayofMonth)
-            updateLabel(myCalendar)
+            val myFormat = "dd-MM-yyyy"
+            val sdf = SimpleDateFormat(myFormat, Locale.getDefault())
+            birthdayEditText?.editText?.setText(sdf.format(myCalendar.time))
         }
-
 
         birthdayEditText?.editText?.setOnClickListener {
-            DatePickerDialog(this, datePicker, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-            myCalendar.get(Calendar.DAY_OF_MONTH)).show()
+             val datePickerDialog = DatePickerDialog(this, datePicker, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH))
+            datePickerDialog.datePicker.maxDate = System.currentTimeMillis()
+            datePickerDialog.show()
+
         }
-
-
     }
 
-    private fun updateLabel(calendar: Calendar){
-        val myFormat = "dd.MM.yyyy"
-        val sdf = SimpleDateFormat(myFormat, Locale.getDefault())
-        birthdayEditText?.editText?.setText(sdf.format(calendar.time))
-    }
+
 }
