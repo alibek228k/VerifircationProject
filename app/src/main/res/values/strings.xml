@@ -14,16 +14,17 @@
     <string name="last_name_error">Field Last name cannot be empty!</string>
     <string name="middle_name_error">Field Middle name cannot be empty!</string>
     <string name="username_error">Field Username cannot be empty!</string>
-    <string name="iin_error">Field IIN cannot be empty!!</string>
-    <string name="phone_number_error">Field phone number cannot be empty!!</string>
-    <string name="password_error">Field password cannot be empty!!</string>
+    <string name="iin_error">Field IIN cannot be empty!</string>
+    <string name="phone_number_error">Field phone number cannot be empty!</string>
+    <string name="password_error">Field password cannot be empty!</string>
     <string name="invalid_format">Invalid format!</string>
-    <string name="birthday_error">Field birthday cannot be empty!!</string>
-    <string name="passwords_should_be_same">Passwords should be same!!</string>
-    <string name="password_confi_error">Field password confirm cannot be empty!!</string>
-    <string name="username_format_error">Invalid format: Username must contain at least 3 characters and a maximum of 15</string>
-    <string name="iin_format_error">Invalid format: IIN should contain 12 characters!</string>
-    <string name="password_format_error">Invalid format: Password should contain: at least 8 symbols, 1 uppercase letter, 1 special symbol (!/$%^)</string>
+    <string name="birthday_error">Field birthday cannot be empty!</string>
+    <string name="passwords_should_be_same">Passwords should be same!</string>
+    <string name="password_confi_error">Field password confirm cannot be empty!</string>
+    <string name="username_format_error">Username must contain at least 3 characters and a maximum of 15</string>
+    <string name="iin_format_error">IIN should contain 12 characters!</string>
+    <string name="password_format_error">Password should contain: at least 8 symbols, 1 uppercase letter, 1 special symbol (!/$%^)</string>
+    <string name="selected_language">English</string>
 
 
 </resources>
